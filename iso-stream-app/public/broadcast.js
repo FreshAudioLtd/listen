@@ -126,8 +126,9 @@
   }
 
   function buildChannelGraph(count) {
-    // Preserve any labels the user already typed, by index.
+    // Preserve any labels/photos the user already set, by index.
     const previousLabels = channelNodes.map((n) => n.label);
+    const previousPhotos = channelNodes.map((n) => n.photo);
     teardownChannelGraph();
 
     audioCtx = new (window.AudioContext || window.webkitAudioContext)();
@@ -147,10 +148,38 @@
         track: channelTrack,
         stream: dest.stream,
         label: previousLabels[i] || `Channel ${i + 1}`,
+        photo: previousPhotos[i] || null,
       });
     }
 
     currentListCleanup = mountChannelRows(channelList, channelNodes, true);
+  }
+
+  // Reads an image file, downsamples/center-crops it to a small square JPEG,
+  // and resolves a data URL — keeps per-channel photos small since they ride
+  // along in every signaling 'channels' message (all channels, to everyone).
+  function resizeImageToDataUrl(file, size = 160, quality = 0.72) {
+    return new Promise((resolve, reject) => {
+      const reader = new FileReader();
+      reader.onerror = () => reject(reader.error || new Error('Could not read file'));
+      reader.onload = () => {
+        const img = new Image();
+        img.onerror = () => reject(new Error('Could not read image'));
+        img.onload = () => {
+          const canvas = document.createElement('canvas');
+          canvas.width = size;
+          canvas.height = size;
+          const ctx = canvas.getContext('2d');
+          const scale = Math.max(size / img.width, size / img.height);
+          const w = img.width * scale;
+          const h = img.height * scale;
+          ctx.drawImage(img, (size - w) / 2, (size - h) / 2, w, h);
+          resolve(canvas.toDataURL('image/jpeg', quality));
+        };
+        img.src = reader.result;
+      };
+      reader.readAsDataURL(file);
+    });
   }
 
   applyChannelCountBtn.addEventListener('click', () => {
@@ -172,6 +201,36 @@
       const row = document.createElement('div');
       row.className = 'channel-row';
 
+      const avatarBtn = document.createElement('button');
+      avatarBtn.type = 'button';
+      avatarBtn.className = 'channel-avatar-btn' + (node.photo ? ' has-photo' : '');
+      avatarBtn.textContent = node.photo ? '' : '📷';
+      avatarBtn.title = node.photo ? 'Change photo' : 'Add photo';
+      avatarBtn.disabled = !editable;
+      if (node.photo) avatarBtn.style.backgroundImage = `url(${node.photo})`;
+
+      const photoInput = document.createElement('input');
+      photoInput.type = 'file';
+      photoInput.accept = 'image/*';
+      photoInput.style.display = 'none';
+      photoInput.addEventListener('change', async () => {
+        const file = photoInput.files && photoInput.files[0];
+        photoInput.value = '';
+        if (!file) return;
+        try {
+          const dataUrl = await resizeImageToDataUrl(file);
+          node.photo = dataUrl;
+          avatarBtn.classList.add('has-photo');
+          avatarBtn.textContent = '';
+          avatarBtn.title = 'Change photo';
+          avatarBtn.style.backgroundImage = `url(${dataUrl})`;
+          sendChannelsUpdate();
+        } catch (err) {
+          console.warn('Could not process photo:', err);
+        }
+      });
+      avatarBtn.addEventListener('click', () => photoInput.click());
+
       const input = document.createElement('input');
       input.type = 'text';
       input.className = 'pill channel-label-input';
@@ -188,6 +247,8 @@
       meterFill.className = 'channel-meter-fill';
       meter.appendChild(meterFill);
 
+      row.appendChild(avatarBtn);
+      row.appendChild(photoInput);
       row.appendChild(input);
       row.appendChild(meter);
       container.appendChild(row);
@@ -202,12 +263,19 @@
 
   // ---------- Going live (Stage 3) ----------
 
+  // Debounced: labels can change on every keystroke, and each channel now
+  // carries a small photo, so batching rapid edits into one send keeps the
+  // signaling channel from being flooded with near-duplicate messages.
+  let sendChannelsTimer = null;
   function sendChannelsUpdate() {
     if (!signaling) return;
-    signaling.send({
-      type: 'channels',
-      channels: channelNodes.map((n) => ({ id: n.id, label: n.label })),
-    });
+    if (sendChannelsTimer) clearTimeout(sendChannelsTimer);
+    sendChannelsTimer = setTimeout(() => {
+      signaling.send({
+        type: 'channels',
+        channels: channelNodes.map((n) => ({ id: n.id, label: n.label, photo: n.photo || null })),
+      });
+    }, 250);
   }
 
   async function createPeerForListener(listenerId) {

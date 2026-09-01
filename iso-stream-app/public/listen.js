@@ -74,8 +74,9 @@
 
       const tile = document.createElement('button');
       tile.type = 'button';
-      tile.className = 'channel-tile ' + (!entry ? 'state-waiting' : listening ? 'state-listening' : 'state-muted');
+      tile.className = 'channel-tile ' + (!entry ? 'state-waiting' : listening ? 'state-listening' : 'state-muted') + (ch.photo ? ' has-photo' : '');
       tile.disabled = !entry;
+      if (ch.photo) tile.style.backgroundImage = `url(${ch.photo})`;
 
       const label = document.createElement('span');
       label.className = 'tile-label';
