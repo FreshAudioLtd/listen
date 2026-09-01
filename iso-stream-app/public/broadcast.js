@@ -21,6 +21,33 @@
 
   const MAX_CHANNELS = 16;
 
+  // Remembers each channel's name/photo (by position — channel 1, 2, 3…) in
+  // this browser, so the next time you broadcast they're filled in
+  // automatically instead of starting over as "Channel 1", "Channel 2"...
+  const CHANNEL_PRESETS_KEY = 'iso-mixer-channel-presets';
+
+  function loadChannelPresets() {
+    try {
+      const raw = localStorage.getItem(CHANNEL_PRESETS_KEY);
+      const parsed = raw ? JSON.parse(raw) : [];
+      return Array.isArray(parsed) ? parsed : [];
+    } catch (err) {
+      console.warn('Could not read saved channel names/photos:', err);
+      return [];
+    }
+  }
+
+  function saveChannelPresets() {
+    try {
+      const presets = channelNodes.map((n) => ({ label: n.label, photo: n.photo || null }));
+      localStorage.setItem(CHANNEL_PRESETS_KEY, JSON.stringify(presets));
+    } catch (err) {
+      // Storage can fail (quota exceeded, private browsing, etc.) — the app
+      // still works, it just won't remember names/photos next time.
+      console.warn('Could not save channel names/photos:', err);
+    }
+  }
+
   let rawStream = null;
   let audioCtx = null;
   let channelNodes = []; // [{ id, track, stream, label, row, meterFillEl }]
@@ -126,9 +153,12 @@
   }
 
   function buildChannelGraph(count) {
-    // Preserve any labels/photos the user already set, by index.
+    // Preserve any labels/photos the user already set THIS session, by
+    // index; for a channel with nothing set yet, fall back to whatever was
+    // saved from a previous broadcast on this browser (loadChannelPresets).
     const previousLabels = channelNodes.map((n) => n.label);
     const previousPhotos = channelNodes.map((n) => n.photo);
+    const presets = loadChannelPresets();
     teardownChannelGraph();
 
     audioCtx = new (window.AudioContext || window.webkitAudioContext)();
@@ -143,12 +173,13 @@
       const dest = audioCtx.createMediaStreamDestination();
       gain.connect(dest);
       const channelTrack = dest.stream.getAudioTracks()[0];
+      const preset = presets[i];
       channelNodes.push({
         id: channelTrack.id,
         track: channelTrack,
         stream: dest.stream,
-        label: previousLabels[i] || `Channel ${i + 1}`,
-        photo: previousPhotos[i] || null,
+        label: previousLabels[i] || (preset && preset.label) || `Channel ${i + 1}`,
+        photo: previousPhotos[i] || (preset && preset.photo) || null,
       });
     }
 
@@ -266,13 +297,16 @@
   // ---------- Going live (Stage 3) ----------
 
   // Debounced: labels can change on every keystroke, and each channel now
-  // carries a small photo, so batching rapid edits into one send keeps the
-  // signaling channel from being flooded with near-duplicate messages.
+  // carries a small photo, so batching rapid edits into one send/save keeps
+  // things from being flooded with near-duplicate writes. Runs whenever a
+  // name or photo changes — while setting up (Stage 2) as well as live —
+  // so presets are saved even if you never go live this time.
   let sendChannelsTimer = null;
   function sendChannelsUpdate() {
-    if (!signaling) return;
     if (sendChannelsTimer) clearTimeout(sendChannelsTimer);
     sendChannelsTimer = setTimeout(() => {
+      saveChannelPresets();
+      if (!signaling) return;
       signaling.send({
         type: 'channels',
         channels: channelNodes.map((n) => ({ id: n.id, label: n.label, photo: n.photo || null })),
