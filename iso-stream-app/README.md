@@ -51,6 +51,10 @@ the steps are identical, just pointed at this app's folder.
    changed while live — listeners see the update immediately.
 5. Changing the input device or channel count requires tapping **Stop** and starting
    again.
+6. Channel names and photos are remembered in this browser, by channel position — next
+   time you broadcast (even after closing the tab), channel 1, 2, 3… are pre-filled with
+   whatever you named/pictured them last time. Just overwrite a name or photo to update
+   it. This is per-browser/device, not shared across the room code.
 
 **Listening:**
 1. Open the site, tap **Listen**, and tap **Join to Listen** (the code is pre-filled).
