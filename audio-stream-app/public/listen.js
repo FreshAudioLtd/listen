@@ -18,10 +18,10 @@
   let wake = null;
   let currentRoom = null;
 
+  // The broadcast room code is fixed (see server.js FIXED_ROOM_CODE), so
+  // prefill it by default — a shared link with ?room=... still overrides it.
   const params = new URLSearchParams(location.search);
-  if (params.get('room')) {
-    roomInput.value = params.get('room').toUpperCase();
-  }
+  roomInput.value = (params.get('room') || 'STUDIO99').toUpperCase();
 
   roomInput.addEventListener('input', () => {
     roomInput.value = roomInput.value.toUpperCase().replace(/[^A-Z0-9]/g, '');
@@ -119,8 +119,8 @@
 
   async function join() {
     const room = roomInput.value.trim();
-    if (room.length !== 6) {
-      joinError.textContent = 'Enter the 6-character room code.';
+    if (!room) {
+      joinError.textContent = 'Enter the room code.';
       return;
     }
     currentRoom = room;

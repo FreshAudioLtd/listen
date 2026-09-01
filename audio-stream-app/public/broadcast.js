@@ -26,7 +26,7 @@
     const labels = {
       connected: 'Live',
       connecting: 'Connecting…',
-      reconnecting: 'Reconnected — share the new code below',
+      reconnecting: 'Reconnecting…',
       closed: 'Disconnected',
     };
     statusText.textContent = labels[state] || state;
@@ -106,6 +106,9 @@
       case 'signal':
         handleSignal(msg.from, msg.data);
         break;
+      case 'host-replaced':
+        stop('Another device started broadcasting on this code and took over.');
+        break;
       default:
         break;
     }
@@ -144,8 +147,9 @@
     signaling = new SignalingClient({
       onOpen: () => signaling.send({ type: 'host' }),
       onReconnect: () => {
-        // Reconnecting gets a *new* room code; existing listener peer
-        // connections are stale since the server dropped that room.
+        // The room code stays fixed, but the server drops the room when the
+        // socket disconnects, so existing listener peer connections are
+        // stale — clear them and re-host under the same code.
         for (const id of Array.from(peers.keys())) closePeer(id);
         signaling.send({ type: 'host' });
       },
@@ -154,7 +158,7 @@
     });
   }
 
-  function stop() {
+  function stop(message) {
     if (signaling) signaling.close();
     for (const id of Array.from(peers.keys())) closePeer(id);
     if (localStream) localStream.getTracks().forEach((t) => t.stop());
@@ -166,6 +170,7 @@
     startBtn.disabled = false;
     roomCodeEl.textContent = '------';
     meterFill.style.width = '0%';
+    setupError.textContent = message || '';
   }
 
   muteBtn.addEventListener('click', () => {
