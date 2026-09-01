@@ -11,10 +11,11 @@ Tested end-to-end locally (5 simultaneous listeners, all receiving live audio,
 
 ## How it works
 
-- **Broadcaster** opens `/broadcast.html`, grants microphone access, and gets a
-  6-character room code.
-- **Listeners** open `/listen.html`, enter that code (or tap a shared link), and
-  hear the broadcaster's audio live.
+- **Broadcaster** opens `/broadcast.html` and grants microphone access — the
+  room code is always the same fixed code (`STUDIO99` by default, see below),
+  so there's nothing to share each time.
+- **Listeners** open `/listen.html`, which is pre-filled with that code (or
+  tap a shared link), and hear the broadcaster's audio live.
 - A small Node.js server only handles *signaling* (tiny text messages to set up
   each connection) — it does **not** carry the actual audio, so it stays cheap
   to run even on a free hosting tier.
@@ -113,11 +114,15 @@ dashboard and add a card for pay-as-you-go if needed.
   screen locks. Keep the broadcasting and listening tabs in the foreground
   with the screen on. The app requests a screen wake lock automatically where
   supported, but you should still disable auto-lock for long sessions.
-- **If the broadcaster's connection drops and reconnects** (e.g. a cellular
-  handoff kills the WebSocket), it gets a **new room code** and all listeners
-  need to rejoin with it. This is a deliberate simplicity trade-off — a more
-  robust version could persist room codes across reconnects if you want that
-  built out later.
+- **The room code is fixed** (`STUDIO99` by default) rather than randomly
+  generated — set your own via the `ROOM_CODE` environment variable. If the
+  broadcaster's connection drops and reconnects (e.g. a cellular handoff kills
+  the WebSocket), it re-hosts under the same code automatically, so listeners
+  don't need a new one.
+- **Only one broadcaster can be live on the fixed code at a time.** Starting a
+  new broadcast takes over the code from whichever device was already
+  broadcasting — that device is disconnected and shown a message, and its
+  listeners see "the broadcast ended" until they rejoin the new one.
 - **5 listeners is the default cap**, adjustable via the `MAX_LISTENERS`
   environment variable — mesh WebRTC (one broadcaster connecting directly to
   each listener) scales fine to that range; going much higher would need a

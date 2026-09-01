@@ -71,14 +71,12 @@ const wss = new WebSocketServer({ server, path: '/ws' });
 // room code -> { hostWs, hostId, listeners: Map<listenerId, ws> }
 const rooms = new Map();
 
-const CODE_ALPHABET = 'ABCDEFGHJKMNPQRSTUVWXYZ23456789'; // no 0/O/1/I/L to avoid ambiguity
-function generateRoomCode() {
-  let code;
-  do {
-    code = Array.from({ length: 6 }, () => CODE_ALPHABET[crypto.randomInt(CODE_ALPHABET.length)]).join('');
-  } while (rooms.has(code));
-  return code;
-}
+// Fixed room code: every broadcast uses this same code, so listeners never
+// need to be given a new one. Starting a new broadcast while one is already
+// live takes over the code — the previous broadcaster is disconnected and
+// its listeners are told the broadcast ended (they just rejoin with the
+// same STUDIO99 code once the new broadcast is live).
+const FIXED_ROOM_CODE = process.env.ROOM_CODE || 'STUDIO99';
 
 function send(ws, msg) {
   if (ws && ws.readyState === ws.OPEN) {
@@ -113,7 +111,15 @@ wss.on('connection', (ws) => {
 
     switch (msg.type) {
       case 'host': {
-        const roomCode = generateRoomCode();
+        const roomCode = FIXED_ROOM_CODE;
+        const existing = rooms.get(roomCode);
+        if (existing && existing.hostWs && existing.hostWs !== ws) {
+          // Someone is already broadcasting on the fixed code — take over:
+          // tell their listeners the broadcast ended and disconnect them.
+          cleanupHost(existing, roomCode);
+          send(existing.hostWs, { type: 'host-replaced' });
+          try { existing.hostWs.close(); } catch {}
+        }
         ws.role = 'host';
         ws.room = roomCode;
         rooms.set(roomCode, { hostWs: ws, hostId: ws.id, listeners: new Map() });
