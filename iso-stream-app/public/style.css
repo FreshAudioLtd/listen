@@ -491,9 +491,14 @@ button.pill.channel-toggle {
   height: 100%;
   min-width: 0;
   min-height: 0;
-  background: #202020;
-  background-size: cover;
+  background-color: #202020;
+  /* Stretched to the tile's full width, auto height, centered — shows the
+     whole width of an uploaded photo rather than cropping the sides off.
+     A photo taller than the tile gets its top/bottom clipped (overflow:
+     hidden below); a photo shorter than the tile letterboxes instead. */
+  background-size: 100% auto;
   background-position: center;
+  background-repeat: no-repeat;
   border: 2px solid var(--ink);
   border-radius: 14px;
   padding: 6px 6px;
@@ -561,17 +566,20 @@ button.pill.channel-toggle {
   opacity: 0.85;
 }
 
+/* background-color (not the `background` shorthand) on purpose: the
+   shorthand would reset background-image/size/position too, which would
+   blank out a channel's photo the moment it's tapped. */
 .channel-tile.state-listening {
-  background: var(--accent);
+  background-color: var(--accent);
   border-color: var(--ink);
 }
 
 .channel-tile.state-muted {
-  background: #202020;
+  background-color: #202020;
 }
 
 .channel-tile.state-waiting {
-  background: #181818;
+  background-color: #181818;
   color: var(--text-dim);
   cursor: default;
 }

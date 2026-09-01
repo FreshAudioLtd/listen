@@ -155,10 +155,12 @@
     currentListCleanup = mountChannelRows(channelList, channelNodes, true);
   }
 
-  // Reads an image file, downsamples/center-crops it to a small square JPEG,
-  // and resolves a data URL — keeps per-channel photos small since they ride
-  // along in every signaling 'channels' message (all channels, to everyone).
-  function resizeImageToDataUrl(file, size = 160, quality = 0.72) {
+  // Reads an image file and downsamples it — WITHOUT cropping — to a data
+  // URL small enough to ride along in every signaling 'channels' message
+  // (all channels, to everyone). The full photo is preserved at its own
+  // aspect ratio (never forced to a square), just scaled down if it's
+  // larger than `maxSize` on its longest side; small photos are left alone.
+  function resizeImageToDataUrl(file, maxSize = 240, quality = 0.75) {
     return new Promise((resolve, reject) => {
       const reader = new FileReader();
       reader.onerror = () => reject(reader.error || new Error('Could not read file'));
@@ -166,14 +168,14 @@
         const img = new Image();
         img.onerror = () => reject(new Error('Could not read image'));
         img.onload = () => {
+          const scale = Math.min(1, maxSize / img.width, maxSize / img.height);
+          const w = Math.max(1, Math.round(img.width * scale));
+          const h = Math.max(1, Math.round(img.height * scale));
           const canvas = document.createElement('canvas');
-          canvas.width = size;
-          canvas.height = size;
+          canvas.width = w;
+          canvas.height = h;
           const ctx = canvas.getContext('2d');
-          const scale = Math.max(size / img.width, size / img.height);
-          const w = img.width * scale;
-          const h = img.height * scale;
-          ctx.drawImage(img, (size - w) / 2, (size - h) / 2, w, h);
+          ctx.drawImage(img, 0, 0, w, h);
           resolve(canvas.toDataURL('image/jpeg', quality));
         };
         img.src = reader.result;
