@@ -1,0 +1,465 @@
+@import url('https://fonts.googleapis.com/css2?family=Oswald:wght@500;600;700&display=swap');
+
+:root {
+  --bg: #181818;
+  --ink: #101010;
+  --white: #ffffff;
+  --accent: #005596;
+  --accent-deep: #013a66;
+  --text-dim: #9a9a9a;
+  --danger: #e50914;
+  --good: #2fbf6e;
+  --warn: #e0a72e;
+  --pill-border: 3px;
+}
+
+* { box-sizing: border-box; }
+
+html, body {
+  margin: 0;
+  padding: 0;
+  min-height: 100%;
+  background: var(--bg);
+  color: var(--white);
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+}
+
+body {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  min-height: 100vh;
+  padding: 20px 20px 32px;
+}
+
+.wrap {
+  width: 100%;
+  max-width: 460px;
+  min-height: calc(100vh - 52px);
+  display: flex;
+  flex-direction: column;
+}
+
+a.back {
+  display: inline-block;
+  color: var(--text-dim);
+  text-decoration: none;
+  font-size: 0.85rem;
+  margin-bottom: 8px;
+}
+
+/* ---------- Home (index) ---------- */
+
+.index-logo {
+  display: block;
+  height: 84px;
+  width: auto;
+  margin: 8px auto 18px;
+}
+
+h1 {
+  font-family: 'Oswald', sans-serif;
+  font-weight: 600;
+  letter-spacing: 0.02em;
+  font-size: 1.6rem;
+  margin: 8px 0 4px;
+  text-align: center;
+}
+
+.subtitle {
+  color: var(--text-dim);
+  text-align: center;
+  margin: 0 0 28px;
+  font-size: 0.95rem;
+}
+
+.choice-grid {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+
+.choice-link {
+  display: block;
+  text-decoration: none;
+  color: inherit;
+  background: #202020;
+  border: var(--pill-border) solid var(--ink);
+  border-radius: 20px;
+  padding: 20px;
+  box-shadow: 0 4px 0 rgba(0,0,0,0.5);
+}
+
+.choice-link .icon {
+  font-size: 1.8rem;
+  margin-bottom: 6px;
+  display: block;
+}
+
+.choice-link .label {
+  font-family: 'Oswald', sans-serif;
+  font-weight: 600;
+  letter-spacing: 0.02em;
+  font-size: 1.15rem;
+}
+
+.choice-link .desc {
+  color: var(--text-dim);
+  font-size: 0.9rem;
+  margin-top: 4px;
+}
+
+/* ---------- Hero (join / broadcast start) ---------- */
+
+.hero {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: flex-start;
+  padding-top: 8vh;
+  gap: 22px;
+}
+
+.hero-title {
+  font-family: 'Oswald', sans-serif;
+  font-weight: 600;
+  letter-spacing: 0.03em;
+  font-size: 1.3rem;
+  text-align: center;
+  color: var(--white);
+  margin: 0;
+}
+
+.hero-desc {
+  color: var(--text-dim);
+  text-align: center;
+  font-size: 0.9rem;
+  line-height: 1.5;
+  margin: -12px 0 0;
+  max-width: 360px;
+}
+
+/* Pill primitive: thick dark border + hard drop shadow, like the mock */
+.pill {
+  width: 100%;
+  border-radius: 999px;
+  border: var(--pill-border) solid var(--ink);
+  box-shadow: 0 5px 0 rgba(0,0,0,0.55);
+}
+
+input[type="text"].pill {
+  font-family: 'Oswald', sans-serif;
+  font-size: 1.3rem;
+  font-weight: 600;
+  letter-spacing: 0.18em;
+  text-align: center;
+  text-transform: uppercase;
+  padding: 20px 18px;
+  background: var(--white);
+  color: var(--ink);
+}
+
+input[type="text"].pill::placeholder {
+  color: #b8b8b8;
+}
+
+input[type="text"].pill:focus {
+  outline: none;
+  border-color: var(--accent);
+}
+
+button.pill, a.pill {
+  display: block;
+  font-family: 'Oswald', sans-serif;
+  font-size: 1.1rem;
+  font-weight: 700;
+  letter-spacing: 0.03em;
+  text-transform: uppercase;
+  text-align: center;
+  text-decoration: none;
+  padding: 19px 18px;
+  cursor: pointer;
+  transition: transform 0.05s ease;
+}
+
+button.pill:active, a.pill:active {
+  transform: translateY(3px);
+  box-shadow: 0 2px 0 rgba(0,0,0,0.55);
+}
+
+.pill-accent {
+  background: var(--accent);
+  color: var(--white);
+}
+
+.pill-danger {
+  background: var(--danger);
+  color: var(--white);
+}
+
+.pill-ghost {
+  background: #202020;
+  color: var(--white);
+}
+
+button.pill:disabled {
+  background: var(--accent-deep);
+  color: #b7c4d1;
+  cursor: not-allowed;
+}
+
+.error-text {
+  color: var(--danger);
+  font-size: 0.9rem;
+  text-align: center;
+  min-height: 1.2em;
+  margin: 0;
+}
+
+/* ---------- Live / connected state ---------- */
+
+.status-row {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  font-size: 0.95rem;
+  font-family: 'Oswald', sans-serif;
+  letter-spacing: 0.02em;
+}
+
+.dot {
+  width: 11px;
+  height: 11px;
+  border-radius: 50%;
+  background: var(--text-dim);
+  flex-shrink: 0;
+}
+
+.dot.live { background: var(--good); box-shadow: 0 0 0 4px rgba(47,191,110,0.2); }
+.dot.connecting { background: var(--warn); }
+.dot.bad { background: var(--danger); }
+
+.room-code-label {
+  text-align: center;
+  color: var(--text-dim);
+  font-size: 0.8rem;
+  text-transform: uppercase;
+  letter-spacing: 0.12em;
+  margin: 0;
+}
+
+.room-code {
+  font-family: 'Oswald', sans-serif;
+  font-size: 2.4rem;
+  font-weight: 700;
+  letter-spacing: 0.14em;
+  text-align: center;
+  color: var(--ink);
+  background: var(--white);
+  border-radius: 999px;
+  border: var(--pill-border) solid var(--ink);
+  box-shadow: 0 5px 0 rgba(0,0,0,0.55);
+  padding: 18px 10px;
+  margin: 0;
+  width: 100%;
+}
+
+.share-link {
+  display: block;
+  word-break: break-all;
+  text-align: center;
+  color: var(--text-dim);
+  font-size: 0.85rem;
+  margin: 0;
+}
+
+.meter {
+  width: 100%;
+  height: 12px;
+  border-radius: 999px;
+  background: #101010;
+  border: 2px solid var(--ink);
+  overflow: hidden;
+}
+
+.meter-fill {
+  height: 100%;
+  width: 0%;
+  background: linear-gradient(90deg, var(--good), var(--warn));
+  transition: width 0.06s linear;
+}
+
+.listener-count {
+  text-align: center;
+  color: var(--text-dim);
+  font-size: 0.85rem;
+  margin: 0;
+}
+
+.controls {
+  display: flex;
+  gap: 12px;
+  width: 100%;
+}
+
+.controls .pill { flex: 1; }
+
+.volume-row {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  width: 100%;
+}
+
+input[type="range"] {
+  flex: 1;
+  accent-color: var(--accent);
+}
+
+audio { display: none; }
+
+/* ---------- Device / channel setup (broadcast) ---------- */
+
+select.pill.select-pill {
+  font-family: 'Oswald', sans-serif;
+  font-size: 1rem;
+  font-weight: 600;
+  text-align: center;
+  text-align-last: center;
+  padding: 18px 18px;
+  background: var(--white);
+  color: var(--ink);
+  appearance: none;
+  -webkit-appearance: none;
+}
+
+.channel-count-row {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  width: 100%;
+  font-family: 'Oswald', sans-serif;
+  letter-spacing: 0.02em;
+}
+
+.channel-count-row label {
+  color: var(--text-dim);
+  font-size: 0.9rem;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+}
+
+.channel-count-row input[type="number"] {
+  width: 64px;
+  text-align: center;
+  font-family: 'Oswald', sans-serif;
+  font-size: 1.1rem;
+  font-weight: 600;
+  background: var(--white);
+  color: var(--ink);
+  border-radius: 999px;
+  border: var(--pill-border) solid var(--ink);
+  box-shadow: 0 3px 0 rgba(0,0,0,0.55);
+  padding: 8px 4px;
+}
+
+button.pill.small {
+  width: auto;
+  padding: 10px 16px;
+  font-size: 0.85rem;
+}
+
+/* ---------- Channel list (broadcast meters + listen mute toggles) ---------- */
+
+.channel-list {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  width: 100%;
+  max-height: 48vh;
+  overflow-y: auto;
+}
+
+.channel-row {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  width: 100%;
+  background: #202020;
+  border: 2px solid var(--ink);
+  border-radius: 14px;
+  padding: 10px 12px;
+}
+
+/* Broadcast setup/live rows: editable label + meter */
+input.pill.channel-label-input {
+  flex: 1;
+  width: auto;
+  font-size: 0.9rem;
+  letter-spacing: 0.06em;
+  text-transform: none;
+  padding: 10px 14px;
+  box-shadow: none;
+  border-width: 2px;
+}
+
+.channel-meter {
+  width: 90px;
+  height: 10px;
+  flex-shrink: 0;
+  border-radius: 999px;
+  background: #101010;
+  border: 2px solid var(--ink);
+  overflow: hidden;
+}
+
+.channel-meter-fill {
+  height: 100%;
+  width: 0%;
+  background: linear-gradient(90deg, var(--good), var(--warn));
+  transition: width 0.06s linear;
+}
+
+/* Listen page rows: label + mute/unmute toggle */
+.channel-row-label {
+  flex: 1;
+  font-family: 'Oswald', sans-serif;
+  font-size: 0.95rem;
+  letter-spacing: 0.03em;
+}
+
+button.pill.channel-toggle {
+  width: auto;
+  flex-shrink: 0;
+  padding: 10px 18px;
+  font-size: 0.8rem;
+  box-shadow: none;
+  border-width: 2px;
+}
+
+/* ---------- Footer brand strip ---------- */
+
+.brand-footer {
+  margin-top: auto;
+  padding-top: 40px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.brand-footer img.logo-square {
+  height: 84px;
+  width: auto;
+  display: block;
+}
+
+.hint {
+  color: var(--text-dim);
+  font-size: 0.8rem;
+  line-height: 1.5;
+  text-align: center;
+  margin-top: 18px;
+}

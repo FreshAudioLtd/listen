@@ -1,0 +1,46 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+  <title>Listen — ISO Mixer</title>
+  <link rel="stylesheet" href="/style.css" />
+</head>
+<body>
+  <div class="wrap">
+    <a class="back" href="/">&larr; Home</a>
+
+    <div class="hero">
+      <div id="joinCard" class="hero" style="padding-top:0; gap:18px;">
+        <input id="roomInput" class="pill" type="text" maxlength="16" placeholder="ROOM CODE" autocapitalize="characters" autocomplete="off" autocorrect="off" spellcheck="false" />
+        <button id="joinBtn" class="pill pill-accent">Join to Listen</button>
+        <p id="joinError" class="error-text"></p>
+      </div>
+
+      <div id="liveCard" class="hero" style="padding-top:0; gap:16px; display:none">
+        <div class="status-row">
+          <span id="statusDot" class="dot connecting"></span>
+          <span id="statusText">Connecting…</span>
+        </div>
+
+        <div id="channelList" class="channel-list"></div>
+
+        <div class="controls">
+          <button id="leaveBtn" class="pill pill-danger">Leave</button>
+        </div>
+      </div>
+    </div>
+
+    <p class="hint">
+      Tap a channel to listen to it — tap again to mute. You can listen to more than one at once.
+    </p>
+
+    <div class="brand-footer">
+      <img class="logo-square" src="/assets/logos/fresh-audio.png" alt="Fresh Audio" />
+    </div>
+  </div>
+
+  <script src="/client.js"></script>
+  <script src="/listen.js"></script>
+</body>
+</html>

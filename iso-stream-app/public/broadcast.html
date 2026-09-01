@@ -1,0 +1,72 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+  <title>Broadcast — ISO Mixer</title>
+  <link rel="stylesheet" href="/style.css" />
+</head>
+<body>
+  <div class="wrap">
+    <a class="back" href="/">&larr; Home</a>
+
+    <div class="hero">
+      <!-- Stage 1: pick the input device (e.g. Dante Virtual Soundcard) -->
+      <div id="deviceCard" class="hero" style="padding-top:0; gap:16px;">
+        <p class="hero-desc" style="margin-top:0;">
+          Select the audio input device carrying your isolated mic feeds — e.g. Dante Virtual
+          Soundcard. This will ask for microphone permission first so device names are visible.
+        </p>
+        <select id="deviceSelect" class="pill select-pill"></select>
+        <button id="useDeviceBtn" class="pill pill-accent">Continue</button>
+        <p id="deviceError" class="error-text"></p>
+      </div>
+
+      <!-- Stage 2: confirm channel count, name each channel, check meters -->
+      <div id="channelsCard" class="hero" style="padding-top:0; gap:14px; display:none">
+        <p class="hero-desc" style="margin-top:0;">
+          Name each channel so listeners know what they're picking. Watch the meters to confirm
+          each one is the mic you expect.
+        </p>
+        <div class="channel-count-row">
+          <label for="channelCountInput">Channels</label>
+          <input id="channelCountInput" type="number" min="1" max="16" />
+          <button id="applyChannelCountBtn" class="pill pill-ghost small">Apply</button>
+        </div>
+        <div id="channelList" class="channel-list"></div>
+        <button id="goLiveBtn" class="pill pill-accent">Go Live</button>
+        <p id="channelsError" class="error-text"></p>
+      </div>
+
+      <!-- Stage 3: live — room code, per-channel meters (labels editable live), stop -->
+      <div id="liveCard" class="hero" style="padding-top:0; gap:16px; display:none">
+        <div class="room-code-label">Room code</div>
+        <div id="roomCode" class="room-code">------</div>
+
+        <div class="status-row">
+          <span id="statusDot" class="dot connecting"></span>
+          <span id="statusText">Connecting…</span>
+        </div>
+
+        <div class="listener-count" id="listenerCount">0 listeners connected</div>
+
+        <div id="liveChannelList" class="channel-list"></div>
+
+        <button id="stopBtn" class="pill pill-danger">Stop</button>
+      </div>
+    </div>
+
+    <p class="hint">
+      Keep this tab open and in the foreground, and your screen on, for uninterrupted streaming.
+      Changing input device or channel count requires stopping and starting again.
+    </p>
+
+    <div class="brand-footer">
+      <img class="logo-square" src="/assets/logos/fresh-audio.png" alt="Fresh Audio" />
+    </div>
+  </div>
+
+  <script src="/client.js"></script>
+  <script src="/broadcast.js"></script>
+</body>
+</html>
