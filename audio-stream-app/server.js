@@ -75,8 +75,8 @@ const rooms = new Map();
 // need to be given a new one. Starting a new broadcast while one is already
 // live takes over the code — the previous broadcaster is disconnected and
 // its listeners are told the broadcast ended (they just rejoin with the
-// same STUDIO99 code once the new broadcast is live).
-const FIXED_ROOM_CODE = process.env.ROOM_CODE || 'STUDIO99';
+// same FRESH code once the new broadcast is live).
+const FIXED_ROOM_CODE = process.env.ROOM_CODE || 'FRESH';
 
 function send(ws, msg) {
   if (ws && ws.readyState === ws.OPEN) {

@@ -12,7 +12,7 @@ Tested end-to-end locally (5 simultaneous listeners, all receiving live audio,
 ## How it works
 
 - **Broadcaster** opens `/broadcast.html` and grants microphone access — the
-  room code is always the same fixed code (`STUDIO99` by default, see below),
+  room code is always the same fixed code (`FRESH` by default, see below),
   so there's nothing to share each time.
 - **Listeners** open `/listen.html`, which is pre-filled with that code (or
   tap a shared link), and hear the broadcaster's audio live.
@@ -114,7 +114,7 @@ dashboard and add a card for pay-as-you-go if needed.
   screen locks. Keep the broadcasting and listening tabs in the foreground
   with the screen on. The app requests a screen wake lock automatically where
   supported, but you should still disable auto-lock for long sessions.
-- **The room code is fixed** (`STUDIO99` by default) rather than randomly
+- **The room code is fixed** (`FRESH` by default) rather than randomly
   generated — set your own via the `ROOM_CODE` environment variable. If the
   broadcaster's connection drops and reconnects (e.g. a cellular handoff kills
   the WebSocket), it re-hosts under the same code automatically, so listeners
