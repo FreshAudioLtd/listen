@@ -1,0 +1,17 @@
+# Render Blueprint: lets you deploy this whole app with "New +" -> "Blueprint"
+# on https://render.com by pointing it at the repo containing this file.
+# You can also skip this and just create a Web Service manually (see README).
+services:
+  - type: web
+    name: audio-stream-app
+    runtime: node
+    plan: free
+    buildCommand: npm install
+    startCommand: npm start
+    envVars:
+      - key: MAX_LISTENERS
+        value: 5
+      - key: METERED_SUBDOMAIN
+        sync: false
+      - key: METERED_API_KEY
+        sync: false

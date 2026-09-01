@@ -1,0 +1,53 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+  <title>Broadcast — Audio Stream</title>
+  <link rel="stylesheet" href="/style.css" />
+</head>
+<body>
+  <div class="wrap">
+    <a class="back" href="/">&larr; Home</a>
+    <h1>📡 Broadcast</h1>
+    <p class="subtitle">Send audio from this device to listeners anywhere.</p>
+
+    <div id="setupCard" class="card">
+      <p class="hint" style="margin-top:0">
+        This will ask for microphone permission. If you're plugging an instrument, mixer,
+        or line-level source into this device, pick it as the input source in your browser's
+        mic permission prompt (or your OS sound settings) before starting.
+      </p>
+      <button id="startBtn" class="btn-primary">Start Broadcasting</button>
+      <p id="setupError" class="error-text"></p>
+    </div>
+
+    <div id="liveCard" class="card" style="display:none">
+      <div class="room-code-label">Room code</div>
+      <div id="roomCode" class="room-code">------</div>
+      <a id="shareLink" class="share-link" href="#"></a>
+
+      <div class="status-row">
+        <span id="statusDot" class="dot connecting"></span>
+        <span id="statusText">Connecting…</span>
+      </div>
+
+      <div class="listener-count" id="listenerCount">0 listeners connected</div>
+      <div class="meter"><div id="meterFill" class="meter-fill"></div></div>
+
+      <div class="controls">
+        <button id="muteBtn" class="btn-secondary">Mute</button>
+        <button id="stopBtn" class="btn-danger">Stop</button>
+      </div>
+    </div>
+
+    <p class="hint">
+      Keep this tab open and in the foreground, and your screen on, for uninterrupted streaming —
+      mobile browsers pause microphone capture when backgrounded or the screen locks.
+    </p>
+  </div>
+
+  <script src="/client.js"></script>
+  <script src="/broadcast.js"></script>
+</body>
+</html>

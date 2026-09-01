@@ -1,0 +1,51 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+  <title>Listen — Audio Stream</title>
+  <link rel="stylesheet" href="/style.css" />
+</head>
+<body>
+  <div class="wrap">
+    <a class="back" href="/">&larr; Home</a>
+    <h1>🎧 Listen</h1>
+    <p class="subtitle">Enter the room code from the broadcaster.</p>
+
+    <div id="joinCard" class="card">
+      <input id="roomInput" type="text" maxlength="6" placeholder="ROOM CODE" autocapitalize="characters" autocomplete="off" autocorrect="off" spellcheck="false" />
+      <button id="joinBtn" class="btn-primary">Join Broadcast</button>
+      <p id="joinError" class="error-text"></p>
+    </div>
+
+    <div id="liveCard" class="card" style="display:none">
+      <div class="status-row">
+        <span id="statusDot" class="dot connecting"></span>
+        <span id="statusText">Connecting…</span>
+      </div>
+
+      <div class="meter"><div id="meterFill" class="meter-fill"></div></div>
+
+      <div class="volume-row">
+        <span>🔈</span>
+        <input id="volumeSlider" type="range" min="0" max="100" value="100" />
+        <span>🔊</span>
+      </div>
+
+      <div class="controls">
+        <button id="leaveBtn" class="btn-danger">Leave</button>
+      </div>
+
+      <audio id="player" autoplay playsinline></audio>
+    </div>
+
+    <p class="hint">
+      Tip: if audio doesn't start automatically, tap "Join Broadcast" again — some browsers block
+      autoplay until you interact with the page.
+    </p>
+  </div>
+
+  <script src="/client.js"></script>
+  <script src="/listen.js"></script>
+</body>
+</html>
