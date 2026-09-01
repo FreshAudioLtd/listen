@@ -53,31 +53,42 @@
 
     const knownIds = new Set(channels.map((c) => c.id));
     // Anything with audio already arriving but no metadata yet (rare
-    // ordering edge case) still gets a row, appended at the end.
+    // ordering edge case) still gets a tile, appended at the end.
     const extra = Array.from(tracks.keys())
       .filter((id) => !knownIds.has(id))
       .map((id) => ({ id, label: 'Channel' }));
 
-    for (const ch of [...channels, ...extra]) {
-      const entry = tracks.get(ch.id);
-      const row = document.createElement('div');
-      row.className = 'channel-row';
+    const all = [...channels, ...extra];
 
-      const label = document.createElement('div');
-      label.className = 'channel-row-label';
+    // Square-ish grid so up to 16 (or more) channels fit one screen with no
+    // scrolling — e.g. 16 channels -> 4 columns x 4 rows.
+    const count = Math.max(1, all.length);
+    const columns = Math.max(1, Math.ceil(Math.sqrt(count)));
+    const rows = Math.max(1, Math.ceil(count / columns));
+    channelListEl.style.gridTemplateColumns = `repeat(${columns}, 1fr)`;
+    channelListEl.style.gridTemplateRows = `repeat(${rows}, 1fr)`;
+
+    for (const ch of all) {
+      const entry = tracks.get(ch.id);
+      const listening = entry && !entry.muted;
+
+      const tile = document.createElement('button');
+      tile.type = 'button';
+      tile.className = 'channel-tile ' + (!entry ? 'state-waiting' : listening ? 'state-listening' : 'state-muted');
+      tile.disabled = !entry;
+
+      const label = document.createElement('span');
+      label.className = 'tile-label';
       label.textContent = ch.label || 'Channel';
 
-      const toggle = document.createElement('button');
-      toggle.type = 'button';
-      const listening = entry && !entry.muted;
-      toggle.className = 'pill channel-toggle ' + (listening ? 'pill-accent' : 'pill-ghost');
-      toggle.textContent = !entry ? 'Waiting…' : listening ? 'Listening' : 'Muted';
-      toggle.disabled = !entry;
-      toggle.addEventListener('click', () => toggleChannel(ch.id));
+      const state = document.createElement('span');
+      state.className = 'tile-state';
+      state.textContent = !entry ? 'Waiting…' : listening ? 'Listening' : 'Muted';
 
-      row.appendChild(label);
-      row.appendChild(toggle);
-      channelListEl.appendChild(row);
+      tile.appendChild(label);
+      tile.appendChild(state);
+      tile.addEventListener('click', () => toggleChannel(ch.id));
+      channelListEl.appendChild(tile);
     }
   }
 
@@ -96,6 +107,7 @@
     joinCard.style.display = 'flex';
     joinBtn.disabled = false;
     joinError.textContent = message || '';
+    document.body.classList.remove('iso-live');
   }
 
   async function ensurePeerConnection() {
@@ -195,6 +207,7 @@
 
     joinCard.style.display = 'none';
     liveCard.style.display = 'flex';
+    document.body.classList.add('iso-live');
     setStatus('connecting');
 
     wake = new ScreenWake();

@@ -113,6 +113,7 @@ h1 {
 
 .hero {
   flex: 1;
+  min-height: 0;
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -438,6 +439,100 @@ button.pill.channel-toggle {
   font-size: 0.8rem;
   box-shadow: none;
   border-width: 2px;
+}
+
+/* ---------- Channel grid (listen page live view, no-scroll) ---------- */
+
+.channel-grid {
+  flex: 1;
+  min-height: 0;
+  display: grid;
+  gap: 8px;
+  width: 100%;
+}
+
+.channel-tile {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 4px;
+  width: 100%;
+  height: 100%;
+  min-width: 0;
+  min-height: 0;
+  background: #202020;
+  border: 2px solid var(--ink);
+  border-radius: 14px;
+  padding: 6px 6px;
+  font-family: 'Oswald', sans-serif;
+  text-align: center;
+  color: var(--white);
+  cursor: pointer;
+  line-height: 1.2;
+  overflow: hidden;
+  transition: transform 0.05s ease;
+}
+
+.channel-tile:active {
+  transform: scale(0.96);
+}
+
+.channel-tile .tile-label {
+  width: 100%;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  font-size: 0.85rem;
+  font-weight: 600;
+  letter-spacing: 0.02em;
+}
+
+.channel-tile .tile-state {
+  font-size: 0.62rem;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  opacity: 0.85;
+}
+
+.channel-tile.state-listening {
+  background: var(--accent);
+  border-color: var(--ink);
+}
+
+.channel-tile.state-muted {
+  background: #202020;
+}
+
+.channel-tile.state-waiting {
+  background: #181818;
+  color: var(--text-dim);
+  cursor: default;
+}
+
+/* ---------- Listen page: live no-scroll layout ---------- */
+
+body.iso-live {
+  height: 100dvh;
+  min-height: 100dvh;
+  overflow: hidden;
+}
+
+body.iso-live .wrap {
+  height: calc(100dvh - 52px);
+  min-height: 0;
+}
+
+body.iso-live .hint {
+  display: none;
+}
+
+body.iso-live .brand-footer {
+  padding-top: 10px;
+}
+
+body.iso-live .brand-footer img.logo-square {
+  height: 40px;
 }
 
 /* ---------- Footer brand strip ---------- */
