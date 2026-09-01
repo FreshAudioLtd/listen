@@ -21,7 +21,7 @@
   // The broadcast room code is fixed (see server.js FIXED_ROOM_CODE), so
   // prefill it by default — a shared link with ?room=... still overrides it.
   const params = new URLSearchParams(location.search);
-  roomInput.value = (params.get('room') || 'STUDIO99').toUpperCase();
+  roomInput.value = (params.get('room') || 'FRESH').toUpperCase();
 
   roomInput.addEventListener('input', () => {
     roomInput.value = roomInput.value.toUpperCase().replace(/[^A-Z0-9]/g, '');
