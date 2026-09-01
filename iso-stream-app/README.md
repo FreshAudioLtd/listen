@@ -45,8 +45,10 @@ the steps are identical, just pointed at this app's folder.
    relying on the auto-detected count — **browser support for high channel counts on a
    virtual sound card device varies, so double-check the meters rather than assuming the
    detected number is correct.** You can adjust the channel count and re-apply if needed.
-4. Name each channel (e.g. "Vocal 1", "Guitar DI") and tap **Go Live**. Names can still
-   be edited while live — listeners see the update immediately.
+4. Name each channel (e.g. "Vocal 1", "Guitar DI") and, optionally, tap the round photo
+   button next to a channel to add a picture of that person/mic — listeners see it as the
+   background of that channel's tile. Tap **Go Live**. Names and photos can still be
+   changed while live — listeners see the update immediately.
 5. Changing the input device or channel count requires tapping **Stop** and starting
    again.
 
