@@ -7,10 +7,16 @@ const { WebSocketServer } = require('ws');
 
 const PORT = process.env.PORT || 3000;
 const MAX_LISTENERS = parseInt(process.env.MAX_LISTENERS || '5', 10);
-const METERED_SUBDOMAIN = process.env.METERED_SUBDOMAIN || '';
-const METERED_API_KEY = process.env.METERED_API_KEY || '';
 
-// Best-effort fallback used only if METERED_SUBDOMAIN/METERED_API_KEY
+// Static TURN credential generated from a Metered.ca "TURN Server" app
+// (dashboard.metered.ca -> TURN Server -> Add Credential). This pair is
+// used directly in the iceServers array below — no per-request API call
+// needed, which is both simpler and avoids an extra network hop from the
+// server to Metered on every join. Set both env vars to enable it.
+const METERED_TURN_USERNAME = process.env.METERED_TURN_USERNAME || '';
+const METERED_TURN_CREDENTIAL = process.env.METERED_TURN_CREDENTIAL || '';
+
+// Best-effort fallback used only if METERED_TURN_USERNAME/METERED_TURN_CREDENTIAL
 // aren't configured: Google's public STUN server (reliable, no auth) plus
 // the Open Relay Project's legacy shared TURN credentials. Metered now
 // gates their TURN service behind free account signup to prevent abuse,
@@ -26,23 +32,28 @@ const FALLBACK_ICE_SERVERS = [
   { urls: 'turn:openrelay.metered.ca:443?transport=tcp', username: 'openrelayproject', credential: 'openrelayproject' },
 ];
 
+function meteredIceServers(username, credential) {
+  return [
+    { urls: 'stun:stun.relay.metered.ca:80' },
+    { urls: 'turn:global.relay.metered.ca:80', username, credential },
+    { urls: 'turn:global.relay.metered.ca:80?transport=tcp', username, credential },
+    { urls: 'turn:global.relay.metered.ca:443', username, credential },
+    { urls: 'turns:global.relay.metered.ca:443?transport=tcp', username, credential },
+  ];
+}
+
 const app = express();
 app.use(express.static(path.join(__dirname, 'public')));
 
-// Serve ICE server config (STUN/TURN) to the frontend. If Metered
-// credentials are configured, fetch fresh short-lived ones from their
-// API; otherwise fall back to the shared public Open Relay servers.
-app.get('/turn-credentials', async (req, res) => {
-  if (METERED_SUBDOMAIN && METERED_API_KEY) {
-    try {
-      const url = `https://${METERED_SUBDOMAIN}.metered.live/api/v1/turn/credentials?apiKey=${encodeURIComponent(METERED_API_KEY)}`;
-      const r = await fetch(url);
-      if (!r.ok) throw new Error(`Metered API responded ${r.status}`);
-      const iceServers = await r.json();
-      return res.json({ iceServers, source: 'metered' });
-    } catch (err) {
-      console.error('Failed to fetch Metered TURN credentials, falling back:', err.message);
-    }
+// Serve ICE server config (STUN/TURN) to the frontend. If a Metered TURN
+// credential is configured, use it directly; otherwise fall back to the
+// shared public Open Relay servers.
+app.get('/turn-credentials', (req, res) => {
+  if (METERED_TURN_USERNAME && METERED_TURN_CREDENTIAL) {
+    return res.json({
+      iceServers: meteredIceServers(METERED_TURN_USERNAME, METERED_TURN_CREDENTIAL),
+      source: 'metered',
+    });
   }
   res.json({ iceServers: FALLBACK_ICE_SERVERS, source: 'fallback' });
 });
