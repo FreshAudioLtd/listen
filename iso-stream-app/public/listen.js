@@ -9,6 +9,11 @@
   const channelListEl = document.getElementById('channelList');
   const leaveBtn = document.getElementById('leaveBtn');
 
+  // Fixed 4x4 = 16 layout (matches the broadcaster's MAX_CHANNELS), always
+  // rendered at full size regardless of how many channels are actually live.
+  const GRID_COLUMNS = 4;
+  const GRID_ROWS = 4;
+
   let iceServers = [];
   let signaling = null;
   let pc = null;
@@ -60,13 +65,12 @@
 
     const all = [...channels, ...extra];
 
-    // Square-ish grid so up to 16 (or more) channels fit one screen with no
-    // scrolling — e.g. 16 channels -> 4 columns x 4 rows.
-    const count = Math.max(1, all.length);
-    const columns = Math.max(1, Math.ceil(Math.sqrt(count)));
-    const rows = Math.max(1, Math.ceil(count / columns));
-    channelListEl.style.gridTemplateColumns = `repeat(${columns}, 1fr)`;
-    channelListEl.style.gridTemplateRows = `repeat(${rows}, 1fr)`;
+    // Always lay out a fixed 4-across, 4-down (16-cell) grid — the max the
+    // broadcaster can send — so tile size/position stays put as channels are
+    // added or drop to fewer than 16, instead of tiles growing to fill the
+    // space when there are only a few.
+    channelListEl.style.gridTemplateColumns = `repeat(${GRID_COLUMNS}, 1fr)`;
+    channelListEl.style.gridTemplateRows = `repeat(${GRID_ROWS}, 1fr)`;
 
     for (const ch of all) {
       const entry = tracks.get(ch.id);
