@@ -131,7 +131,7 @@
     iceServers = await fetchIceServers();
 
     setupCard.style.display = 'none';
-    liveCard.style.display = 'block';
+    liveCard.style.display = 'flex';
     setStatus('connecting');
 
     stopMeter = createLevelMeter(localStream, (level) => {
@@ -162,7 +162,7 @@
     if (wake) wake.release();
 
     liveCard.style.display = 'none';
-    setupCard.style.display = 'block';
+    setupCard.style.display = 'flex';
     startBtn.disabled = false;
     roomCodeEl.textContent = '------';
     meterFill.style.width = '0%';

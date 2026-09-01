@@ -9,40 +9,52 @@
 <body>
   <div class="wrap">
     <a class="back" href="/">&larr; Home</a>
-    <h1>🎧 Listen</h1>
-    <p class="subtitle">Enter the room code from the broadcaster.</p>
 
-    <div id="joinCard" class="card">
-      <input id="roomInput" type="text" maxlength="6" placeholder="ROOM CODE" autocapitalize="characters" autocomplete="off" autocorrect="off" spellcheck="false" />
-      <button id="joinBtn" class="btn-primary">Join Broadcast</button>
-      <p id="joinError" class="error-text"></p>
-    </div>
-
-    <div id="liveCard" class="card" style="display:none">
-      <div class="status-row">
-        <span id="statusDot" class="dot connecting"></span>
-        <span id="statusText">Connecting…</span>
+    <div class="hero">
+      <div id="joinCard" class="hero" style="padding-top:0; gap:18px;">
+        <input id="roomInput" class="pill" type="text" maxlength="6" placeholder="ROOM CODE" autocapitalize="characters" autocomplete="off" autocorrect="off" spellcheck="false" />
+        <button id="joinBtn" class="pill pill-accent">Join to Listen</button>
+        <p id="joinError" class="error-text"></p>
       </div>
 
-      <div class="meter"><div id="meterFill" class="meter-fill"></div></div>
+      <div id="liveCard" class="hero" style="padding-top:0; gap:18px; display:none">
+        <div class="status-row">
+          <span id="statusDot" class="dot connecting"></span>
+          <span id="statusText">Connecting…</span>
+        </div>
 
-      <div class="volume-row">
-        <span>🔈</span>
-        <input id="volumeSlider" type="range" min="0" max="100" value="100" />
-        <span>🔊</span>
+        <div class="meter"><div id="meterFill" class="meter-fill"></div></div>
+
+        <div class="volume-row">
+          <span>🔈</span>
+          <input id="volumeSlider" type="range" min="0" max="100" value="100" />
+          <span>🔊</span>
+        </div>
+
+        <div class="controls">
+          <button id="leaveBtn" class="pill pill-danger">Leave</button>
+        </div>
+
+        <audio id="player" autoplay playsinline></audio>
       </div>
-
-      <div class="controls">
-        <button id="leaveBtn" class="btn-danger">Leave</button>
-      </div>
-
-      <audio id="player" autoplay playsinline></audio>
     </div>
 
     <p class="hint">
-      Tip: if audio doesn't start automatically, tap "Join Broadcast" again — some browsers block
+      Tip: if audio doesn't start automatically, tap "Join to Listen" again — some browsers block
       autoplay until you interact with the page.
     </p>
+
+    <div class="brand-footer">
+      <div class="brand-logos">
+        <img class="logo-square" src="/assets/logos/fresh-audio.png" alt="Fresh Audio" />
+        <img class="logo-wide" src="/assets/logos/netflix.png" alt="Netflix" />
+      </div>
+      <div class="brand-divider"></div>
+      <div class="brand-studio">
+        <img src="/assets/logos/studio99-mark.png" alt="" />
+        <img src="/assets/logos/studio99-text.png" alt="Studio 99" style="height:16px" />
+      </div>
+    </div>
   </div>
 
   <script src="/client.js"></script>

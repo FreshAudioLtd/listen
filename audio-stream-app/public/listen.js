@@ -45,7 +45,7 @@
     if (signaling) { signaling.close(); signaling = null; }
     player.srcObject = null;
     liveCard.style.display = 'none';
-    joinCard.style.display = 'block';
+    joinCard.style.display = 'flex';
     joinBtn.disabled = false;
     joinError.textContent = message || '';
   }
@@ -134,7 +134,7 @@
     iceServers = await fetchIceServers();
 
     joinCard.style.display = 'none';
-    liveCard.style.display = 'block';
+    liveCard.style.display = 'flex';
     setStatus('connecting');
 
     wake = new ScreenWake();
