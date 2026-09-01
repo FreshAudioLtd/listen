@@ -1,0 +1,19 @@
+{
+  "name": "iso-stream-app",
+  "version": "1.0.0",
+  "description": "Live multi-channel ISO mic feed streaming from one device (e.g. Dante Virtual Soundcard) to up to 5 listeners, each choosing which channels to monitor, over WebRTC.",
+  "main": "server.js",
+  "type": "commonjs",
+  "engines": {
+    "node": ">=18.0.0"
+  },
+  "scripts": {
+    "start": "node server.js",
+    "dev": "node server.js"
+  },
+  "dependencies": {
+    "dotenv": "^16.4.5",
+    "express": "^4.19.2",
+    "ws": "^8.18.0"
+  }
+}
