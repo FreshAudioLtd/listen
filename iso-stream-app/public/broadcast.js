@@ -21,6 +21,12 @@
 
   const MAX_CHANNELS = 16;
 
+  // A flat gain boost applied to every channel before it's sent, so
+  // listeners hear it louder without needing per-channel volume controls
+  // (which this app deliberately doesn't have — mute/unmute only).
+  const CHANNEL_GAIN_DB = 5;
+  const CHANNEL_GAIN_LINEAR = Math.pow(10, CHANNEL_GAIN_DB / 20);
+
   // Remembers each channel's name/photo (by position — channel 1, 2, 3…) in
   // this browser, so the next time you broadcast they're filled in
   // automatically instead of starting over as "Channel 1", "Channel 2"...
@@ -169,6 +175,7 @@
     channelNodes = [];
     for (let i = 0; i < count; i++) {
       const gain = audioCtx.createGain();
+      gain.gain.value = CHANNEL_GAIN_LINEAR;
       splitter.connect(gain, i, 0);
       const dest = audioCtx.createMediaStreamDestination();
       gain.connect(dest);
