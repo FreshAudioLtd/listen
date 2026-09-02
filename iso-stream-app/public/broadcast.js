@@ -24,7 +24,7 @@
   // A flat gain boost applied to every channel before it's sent, so
   // listeners hear it louder without needing per-channel volume controls
   // (which this app deliberately doesn't have — mute/unmute only).
-  const CHANNEL_GAIN_DB = 5;
+  const CHANNEL_GAIN_DB = 10;
   const CHANNEL_GAIN_LINEAR = Math.pow(10, CHANNEL_GAIN_DB / 20);
 
   // Remembers each channel's name/photo (by position — channel 1, 2, 3…) in
