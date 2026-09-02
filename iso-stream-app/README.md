@@ -66,6 +66,11 @@ the steps are identical, just pointed at this app's folder.
 - **No per-channel volume — just mute/unmute.** This keeps the listener UI simple and
   avoids one more thing to get wrong live; if you need actual fader control later, that's
   a bigger follow-up (this app currently just toggles each channel's audio element on/off).
+  Every channel does get a flat **+5dB gain boost** applied on the broadcaster's side
+  before it's sent (see `CHANNEL_GAIN_DB` in `broadcast.js`), so listeners hear things
+  louder by default without needing a volume control. A source that's already hot/loud
+  going in can clip with the extra 5dB — watch the broadcaster's meters, and back off the
+  input gain at the source if a meter is pinning red.
 - **No guaranteed sample-accurate sync between channels.** Each channel is its own WebRTC
   track with its own independent jitter buffer on the receiving end. Listening to one
   channel at a time is completely fine. Listening to two closely related, bleed-prone mic
