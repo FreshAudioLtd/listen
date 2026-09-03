@@ -63,6 +63,20 @@ the steps are identical, just pointed at this app's folder.
 
 ## Known limitations
 
+- **Chrome caps audio capture at 2 channels — this is the #1 cause of "only some channels
+  work."** This isn't a bug in the app or your audio interface: it's a long-standing
+  Chromium limitation in how `getUserMedia()` captures audio (tracked upstream as
+  [Chromium issue 40403559](https://issues.chromium.org/issues/40403559)). Even when a
+  device like Dante Virtual Soundcard is correctly configured for 16 channels — visible
+  as 16 in/16 out in both the DVS app and macOS Audio MIDI Setup — Chrome's own
+  `track.getCapabilities().channelCount.max` still reports `2` for it, so only the first
+  2 channels ever reach the app, no matter what's requested or patched upstream.
+  **Workaround: broadcast from Firefox instead of Chrome.** Firefox has working
+  multichannel `getUserMedia()` capture on macOS (confirmed by Mozilla, see
+  [bug 1393401](https://bugzilla.mozilla.org/show_bug.cgi?id=1393401)) and Windows
+  support varies by version — test it with real channels before relying on it live.
+  Listeners are unaffected either way since they only ever receive audio, never capture
+  it, so they can keep using whatever browser they like.
 - **No per-channel volume — just mute/unmute.** This keeps the listener UI simple and
   avoids one more thing to get wrong live; if you need actual fader control later, that's
   a bigger follow-up (this app currently just toggles each channel's audio element on/off).
